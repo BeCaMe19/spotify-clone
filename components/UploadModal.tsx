@@ -16,7 +16,7 @@ const UploadModal = () => {
   const uploadModal = useUploadModal();
   const { user } = useUser();
   const supabaseClient = useSupabaseClient();
-  const router=useRouter();
+  const router = useRouter();
   const { register, handleSubmit, reset } = useForm<FieldValues>({
     defaultValues: {
       author: "",
@@ -46,7 +46,7 @@ const UploadModal = () => {
       //upload songs
       const { data: songData, error: songError } = await supabaseClient.storage
         .from("songs")
-        .upload("song"+"-"+values.title+"-"+uniqidID, songFile, {
+        .upload("song" + "-" + values.title + "-" + uniqidID, songFile, {
           cacheControl: "3600",
           upsert: false,
         });
@@ -58,7 +58,7 @@ const UploadModal = () => {
       const { data: imageData, error: imageError } =
         await supabaseClient.storage
           .from("images")
-          .upload("image-"+values.title+"-"+uniqidID, imageFile, {
+          .upload("image-" + values.title + "-" + uniqidID, imageFile, {
             cacheControl: "3600",
             upsert: false,
           });
@@ -66,16 +66,16 @@ const UploadModal = () => {
         setIsLoading(false);
         return toast.error("Failed image upload.");
       }
-      const {
-        error: supabaseError
-      }=await supabaseClient.from('songs').insert({
-        user_id: user.id,
-        title: values.title,
-        author: values.author,
-        image_path: imageData.path,
-        song_path: songData.path
-      });
-      if(supabaseError){
+      const { error: supabaseError } = await supabaseClient
+        .from("songs")
+        .insert({
+          user_id: user.id,
+          title: values.title,
+          author: values.author,
+          image_path: imageData.path,
+          song_path: songData.path,
+        });
+      if (supabaseError) {
         setIsLoading(false);
         return toast.error(supabaseError.message);
       }
